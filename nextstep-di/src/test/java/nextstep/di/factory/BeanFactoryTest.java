@@ -7,7 +7,6 @@ import nextstep.di.factory.example.repository.JdbcQuestionRepository;
 import nextstep.di.factory.example.repository.JdbcUserRepository;
 import nextstep.di.factory.example.repository.QuestionRepository;
 import nextstep.di.factory.example.service.MyQnaService;
-import nextstep.di.factory.example.service.TestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class BeanFactoryTest {
     private BeanFactory beanFactory;
-    private Set<BeanDefinition> beanDefinitions;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
@@ -30,7 +28,7 @@ public class BeanFactoryTest {
         Set<Class<?>> clazz = new HashSet<>(Arrays.asList(MyQnaService.class,
                 JdbcUserRepository.class, JdbcQuestionRepository.class, QnaController.class));
 
-        beanDefinitions = clazz.stream()
+        Set<BeanDefinition> beanDefinitions = clazz.stream()
                 .map(ClasspathBeanDefinition::new)
                 .collect(Collectors.toSet());
 
@@ -59,12 +57,6 @@ public class BeanFactoryTest {
         final QuestionRepository expected = beanFactory.getBean(JdbcQuestionRepository.class);
 
         assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("Bean으로 등록되지 않은 클래스를 생성하지 않는지 확인")
-    void beanScopeTest() {
-        assertThat(beanDefinitions).doesNotContain(new ClasspathBeanDefinition(TestService.class));
     }
 
     @Test
