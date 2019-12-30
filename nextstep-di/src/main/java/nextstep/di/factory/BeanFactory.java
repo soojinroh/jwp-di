@@ -25,7 +25,12 @@ public class BeanFactory {
 
     @SuppressWarnings("unchecked")
     private <T> T instantiateBean(Class<?> beanClass) {
-        return (T) beans.getOrDefault(beanClass, instantiate(beanClass));
+        if (beans.containsKey(beanClass)) {
+            return (T) beans.get(beanClass);
+        }
+        Object instantiatedBean = instantiate(beanClass);
+        beans.put(beanClass, instantiatedBean);
+        return (T) instantiatedBean;
     }
 
     private Object instantiate(Class<?> beanClass) {
